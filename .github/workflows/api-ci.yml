@@ -1,35 +1,16 @@
 name: API CI
-
+#on: [push]
 on:
   push:
     paths:
       - "./api/**"
       - ".github/workflows/api-ci.yml"
 
-
-
 defaults:
   run:
     working-directory: ./api
 
 jobs:
-  linter:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Setup Nodejs
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-          cache: 'npm'
-          cache-dependency-path: ./api/package-lock.json
-      - name: install
-        shell: bash
-        run: npm ci
-      - name: run linter
-        shell: bash
-        run: npm run lint
   unit-test:
     runs-on: ubuntu-latest
     steps:
@@ -38,7 +19,7 @@ jobs:
       - name: Setup Nodejs
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: 18
           cache: 'npm'
           cache-dependency-path: ./api/package-lock.json
       - name: install
@@ -47,10 +28,29 @@ jobs:
       - name: run unit test
         shell: bash
         run: npm run test
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Nodejs
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: ./api/package-lock.json
+      - name: install
+        shell: bash
+        run: npm ci
+      - name: run lint
+        shell: bash
+        run: npm run lint --silent
+
   e2e:
     runs-on: ubuntu-latest
     container:
-      image: node:16
+      image: node:18
 
     services:
       mongo-e2e:
