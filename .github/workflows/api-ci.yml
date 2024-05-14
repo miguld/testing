@@ -1,15 +1,5 @@
 name: API CI
-on:
-  push:
-    - "./api/**"
-    - ".github/workflows/api-ci.yml"
-
-
-
-
-defaults:
-  run:
-    working-directory: ./api
+on: [push]
 
 jobs:
   unit-test:
@@ -17,17 +7,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Setup Nodejs
+        with:
+          path: './api'  # Especifica la carpeta de destino
+      - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 18
+          node-version: 14.x  # Usa una versión válida de Node.js
           cache: 'npm'
           cache-dependency-path: ./api/package-lock.json
-      - name: install
-        shell: bash
-        run: npm ci
-      - name: run unit test
-        shell: bash
-        run: npm run test
-
-
+      - name: Install dependencies
+        run: npm ci  # Instala las dependencias
+        working-directory: ./api  # Trabaja en la carpeta api
+      - name: Run unit tests
+        run: npm run test  # Ejecuta los tests
+        working-directory: ./api  # Trabaja en la carpeta api
