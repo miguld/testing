@@ -1,23 +1,18 @@
-name: API CI
-on: [push]
-
+on: push
 jobs:
-  unit-test:
-    runs-on: ubuntu-latest
+  test:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          path: './api'  # Especifica la carpeta de destino
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14.x  # Usa una versión válida de Node.js
-          cache: 'npm'
-          cache-dependency-path: ./api/package-lock.json
-      - name: Install dependencies
-        run: npm ci  # Instala las dependencias
-        working-directory: ./api  # Trabaja en la carpeta api
-      - name: Run unit tests
-        run: npm run test  # Ejecuta los tests
-        working-directory: ./api  # Trabaja en la carpeta api
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+    - run: npm install-ci-test
+    - uses:
+    publish:
+      needs: [test]
+      steps:
+      - uses: actions/checkout@v4
