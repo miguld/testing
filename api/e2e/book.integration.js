@@ -1,8 +1,7 @@
 const mockGetAll = jest.fn();
 const request = require('supertest');
-
-const createApp = require('../src/app');
 const { generateManyBook } = require('../src/fakes/book.fake');
+const createApp = require('../src/app');
 
 jest.mock('../src/lib/mongo.lib', () => jest.fn().mockImplementation(() => ({
   getAll: mockGetAll,
